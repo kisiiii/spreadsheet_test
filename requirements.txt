@@ -1,3 +1,7 @@
 streamlit
 pandas
-geopy
+gspread
+google-auth
+google-auth-oauthlib
+gspread-dataframe
+python-dotenv
