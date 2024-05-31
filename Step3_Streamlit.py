@@ -1,43 +1,43 @@
-import os
 import streamlit as st
 import pandas as pd
 import gspread
 from google.oauth2.service_account import Credentials
 from gspread_dataframe import set_with_dataframe
-from dotenv import load_dotenv
-
-# 環境変数の読み込み
-#load_dotenv()
-
-# 環境変数から認証情報を取得
-#SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
-#PRIVATE_KEY_PATH = os.getenv("PRIVATE_KEY_PATH")
-#SP_SHEET     = 'tech0_01' # sheet名
-
+import json
 
 # スプレッドシートからデータを読み込む関数
 def load_data_from_spreadsheet():
-    # googleスプレッドシートの認証 jsonファイル読み込み(key値はGCPから取得)
-    # SP_CREDENTIAL_FILE = PRIVATE_KEY_PATH
-
     scopes = [
         'https://www.googleapis.com/auth/spreadsheets',
         'https://www.googleapis.com/auth/drive'
     ]
 
-    credentials = Credentials.from_service_account_file(
-        st.secrets["PRIVATE_KEY_PATH"],# json to toml
-        scopes=scopes
+    # secrets.tomlから認証情報を取得
+    google_credentials = {
+        "type": st.secrets["GOOGLE_CREDENTIALS"]["type"],
+        "project_id": st.secrets["GOOGLE_CREDENTIALS"]["project_id"],
+        "private_key_id": st.secrets["GOOGLE_CREDENTIALS"]["private_key_id"],
+        "private_key": st.secrets["GOOGLE_CREDENTIALS"]["private_key"],
+        "client_email": st.secrets["GOOGLE_CREDENTIALS"]["client_email"],
+        "client_id": st.secrets["GOOGLE_CREDENTIALS"]["client_id"],
+        "auth_uri": st.secrets["GOOGLE_CREDENTIALS"]["auth_uri"],
+        "token_uri": st.secrets["GOOGLE_CREDENTIALS"]["token_uri"],
+        "auth_provider_x509_cert_url": st.secrets["GOOGLE_CREDENTIALS"]["auth_provider_x509_cert_url"],
+        "client_x509_cert_url": st.secrets["GOOGLE_CREDENTIALS"]["client_x509_cert_url"]
+    }
+
+    credentials = Credentials.from_service_account_info(
+        google_credentials, scopes=scopes
     )
     gc = gspread.authorize(credentials)
-    SP_SHEET_KEY = st.secrets.SP_SHEET_KEY.key # d/〇〇/edit の〇〇部分
-    sh  = gc.open_by_key(SP_SHEET_KEY)
+    SP_SHEET_KEY = st.secrets["SP_SHEET_KEY"]
+    sh = gc.open_by_key(SP_SHEET_KEY)
 
     # 不動産データの取得
-    worksheet = sh.worksheet("TL_240221door_model_ver2") # シート名
-    pre_data  = worksheet.get_all_values()
+    worksheet = sh.worksheet("TL_240221door_model_ver2")
+    pre_data = worksheet.get_all_values()
     col_name = pre_data[0][:]
-    df = pd.DataFrame(pre_data[1:], columns=col_name) # 一段目をカラム、以下データフレームで取得
+    df = pd.DataFrame(pre_data[1:], columns=col_name)
 
     return df
 
@@ -45,7 +45,6 @@ def load_data_from_spreadsheet():
 def main():
     df = load_data_from_spreadsheet()
     st.dataframe(df)
-
 
 # アプリケーションの実行
 if __name__ == "__main__":
