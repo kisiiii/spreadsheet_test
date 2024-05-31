@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 # スプレッドシートからデータを読み込む関数
 def load_data_from_spreadsheet():
     # googleスプレッドシートの認証 jsonファイル読み込み(key値はGCPから取得)
-    #SP_CREDENTIAL_FILE = PRIVATE_KEY_PATH
+    # SP_CREDENTIAL_FILE = PRIVATE_KEY_PATH
 
     scopes = [
         'https://www.googleapis.com/auth/spreadsheets',
@@ -30,8 +30,8 @@ def load_data_from_spreadsheet():
         scopes=scopes
     )
     gc = gspread.authorize(credentials)
-
-    SP_SHEET_KEY = st.secrets["SPREADSHEET_ID"] # d/〇〇/edit の〇〇部分
+    st.secrets.SP_SHEET_KEY.key
+    SP_SHEET_KEY = st.secrets.SP_SHEET_KEY.key # d/〇〇/edit の〇〇部分
     sh  = gc.open_by_key(SP_SHEET_KEY)
 
     # 不動産データの取得
