@@ -7,7 +7,7 @@ from gspread_dataframe import set_with_dataframe
 from dotenv import load_dotenv
 
 # 環境変数の読み込み
-load_dotenv()
+#load_dotenv()
 
 # 環境変数から認証情報を取得
 #SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
@@ -50,8 +50,4 @@ def main():
 
 # アプリケーションの実行
 if __name__ == "__main__":
-    if 'search_clicked' not in st.session_state:
-        st.session_state['search_clicked'] = False
-    if 'show_all' not in st.session_state:
-        st.session_state['show_all'] = False
     main()
