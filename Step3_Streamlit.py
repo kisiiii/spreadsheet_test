@@ -26,16 +26,15 @@ def load_data_from_spreadsheet():
     ]
 
     credentials = Credentials.from_service_account_file(
-        st.secrets["PRIVATE_KEY_PATH"],
+        st.secrets["PRIVATE_KEY_PATH"],# json to toml
         scopes=scopes
     )
     gc = gspread.authorize(credentials)
-    st.secrets.SP_SHEET_KEY.key
     SP_SHEET_KEY = st.secrets.SP_SHEET_KEY.key # d/〇〇/edit の〇〇部分
     sh  = gc.open_by_key(SP_SHEET_KEY)
 
     # 不動産データの取得
-    worksheet = sh.worksheet("TL_240221door_model_ver2") # シートのデータ取得
+    worksheet = sh.worksheet("TL_240221door_model_ver2") # シート名
     pre_data  = worksheet.get_all_values()
     col_name = pre_data[0][:]
     df = pd.DataFrame(pre_data[1:], columns=col_name) # 一段目をカラム、以下データフレームで取得
