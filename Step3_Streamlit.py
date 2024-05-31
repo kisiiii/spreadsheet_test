@@ -1,28 +1,24 @@
 import os
 import streamlit as st
 import pandas as pd
-import numpy as np
 import gspread
 from google.oauth2.service_account import Credentials
 from gspread_dataframe import set_with_dataframe
 from dotenv import load_dotenv
-from geopy.geocoders import Nominatim
-import folium
-from streamlit_folium import folium_static
 
 # 環境変数の読み込み
 load_dotenv()
 
 # 環境変数から認証情報を取得
-SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
-PRIVATE_KEY_PATH = os.getenv("PRIVATE_KEY_PATH")
-SP_SHEET     = 'tech0_01' # sheet名
+#SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
+#PRIVATE_KEY_PATH = os.getenv("PRIVATE_KEY_PATH")
+#SP_SHEET     = 'tech0_01' # sheet名
 
 
 # スプレッドシートからデータを読み込む関数
 def load_data_from_spreadsheet():
     # googleスプレッドシートの認証 jsonファイル読み込み(key値はGCPから取得)
-    SP_CREDENTIAL_FILE = PRIVATE_KEY_PATH
+    #SP_CREDENTIAL_FILE = PRIVATE_KEY_PATH
 
     scopes = [
         'https://www.googleapis.com/auth/spreadsheets',
@@ -30,12 +26,12 @@ def load_data_from_spreadsheet():
     ]
 
     credentials = Credentials.from_service_account_file(
-        SP_CREDENTIAL_FILE,
+        st.secrets["PRIVATE_KEY_PATH"],
         scopes=scopes
     )
     gc = gspread.authorize(credentials)
 
-    SP_SHEET_KEY = SPREADSHEET_ID # d/〇〇/edit の〇〇部分
+    SP_SHEET_KEY = st.secrets["SPREADSHEET_ID"] # d/〇〇/edit の〇〇部分
     sh  = gc.open_by_key(SP_SHEET_KEY)
 
     # 不動産データの取得
